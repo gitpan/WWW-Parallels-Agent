@@ -22,7 +22,7 @@ use constant {
 
 use namespace::clean;
 
-our $VERSION = 'v0.0.1'; # VERSION
+our $VERSION = 'v0.0.2'; # VERSION
 # ABSTRACT: Client implementation of the Parallels Virtual Automation Agent API
 
 fieldhash my %client => "_client";
@@ -67,7 +67,6 @@ sub new {
 	# Create self and client attribute:
 	my $self = bless { }, $class;
 	$schema{$self} = $schema; # Schema accessor exists only for unit tests
-	say $ip_address;
 	$client{$self} = $self->_client( IO::Socket::INET->new(
 		PeerAddr => $ip_address,
 		PeerPort => 4433,
@@ -113,10 +112,43 @@ foreach my $namespace ( $schema->namespaces->list ) {
 		local $/ = "\0";
 		my $operation = $self->_write_packet($namespace, $function, %params);
 		$operation =~ s/(\w+?>.+?==)\n/$1/gx;
-		say $operation;
 		$self->_client->print($operation . "\0");
-		say $self->_client->readline; } }
+		return $self->_client->readline; } }
 #		return Response->new(
 #			$client->reader($namespace)->( $self->_client->readline ) ); } }
 
 1;
+
+__END__
+
+=encoding utf8
+
+=head1 NAME
+
+WWW::Parallels::Agent - Client implementation of the Parallels Virtual Agent API
+
+=head1 SYNOPSIS
+
+	my $agent = WWW::Parallels::Agent->new(
+		hostname    => "domain.tld",
+		use_ssl     => 0,
+		xsd_version => 4
+	);
+	$agent->system( login => {
+		name     => "root",
+		realm    => "00000000-0000-0000-0000-000000000000",
+		password => "mysecret123"
+	} );
+	$agent->envm( suspend => { # suspend a VPS container
+		eid => "e43581cb-f13a-324d-aab5-e356e19ebee4"
+	} );
+
+=head1 AUTHOR
+
+Richard Simões C<< <rsimoes AT cpan DOT org> >>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright © 2012 Richard Simões. This module is released under the terms of the
+Artistic License 2.0 and may be modified and/or redistributed under the same or
+any compatible license.

@@ -21,7 +21,7 @@ my %module_build_args = (
     "Richard Sim\303\265es <rsimoes AT cpan DOT org>"
   ],
   "dist_name" => "WWW-Parallels-Agent",
-  "dist_version" => "v0.0.1",
+  "dist_version" => "v0.0.2",
   "license" => "lgpl",
   "module_name" => "WWW::Parallels::Agent",
   "recommends" => {},

@@ -8,7 +8,7 @@ use Carp;
 use Hash::FieldHash qw(fieldhash);
 use namespace::clean;
 
-our $VERSION = 'v0.0.1'; # VERSION
+our $VERSION = 'v0.0.2'; # VERSION
 # ABSTRACT: Parallels Virtual Automation Agent API response class
 
 

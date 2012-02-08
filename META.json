@@ -13,6 +13,11 @@
       "version" : "2"
    },
    "name" : "WWW-Parallels-Agent",
+   "no_index" : {
+      "namespace" : [
+         "WWW::Parallels::Agent::Response"
+      ]
+   },
    "prereqs" : {
       "build" : {
          "requires" : {
@@ -55,6 +60,6 @@
          "web" : "https://github.com/rsimoes/www-parallels-agent"
       }
    },
-   "version" : "v0.0.1"
+   "version" : "v0.0.2"
 }
 

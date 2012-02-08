@@ -17,6 +17,9 @@ meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
 name: WWW-Parallels-Agent
+no_index:
+  namespace:
+    - WWW::Parallels::Agent::Response
 requires:
   File::ShareDir: 0
   Hash::FieldHash: 0
@@ -28,4 +31,4 @@ resources:
   bugtracker: https://github.com/rsimoes/www-parallels-agent/issues
   homepage: https://metacpan.org/release/WWW-Parallels-Agent
   repository: git://github.com/rsimoes/www-parallels-agent.git
-version: v0.0.1
+version: v0.0.2

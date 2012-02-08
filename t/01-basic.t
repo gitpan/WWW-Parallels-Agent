@@ -21,7 +21,7 @@ can_ok($agent, qw(new _client _schema));
 
 SKIP: {
 	eval { load XML::Compile::Tester };
-	skip "XML::Compile::Tester not insalled." if $@;
+	skip "XML::Compile::Tester not installed." if $@;
 	XML::Compile::Tester->import;
 	my $writer = writer_create(
 		$agent->_schema,
