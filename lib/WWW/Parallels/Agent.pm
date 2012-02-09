@@ -8,7 +8,7 @@ use Carp;
 use File::ShareDir qw(dist_dir);
 use File::Spec::Functions qw(catdir catfile);
 use Hash::FieldHash qw(fieldhash);
-use IO::Socket;
+use IO::Socket::INET;
 use Params::Check "check";
 use POSIX "floor";
 use Socket qw(:addrinfo inet_aton SOCK_RAW);
@@ -22,7 +22,7 @@ use constant {
 
 use namespace::clean;
 
-our $VERSION = 'v0.0.2'; # VERSION
+our $VERSION = 'v0.0.3'; # VERSION
 # ABSTRACT: Client implementation of the Parallels Virtual Automation Agent API
 
 fieldhash my %client => "_client";
@@ -66,31 +66,32 @@ sub new {
 
 	# Create self and client attribute:
 	my $self = bless { }, $class;
-	$schema{$self} = $schema; # Schema accessor exists only for unit tests
-	$client{$self} = $self->_client( IO::Socket::INET->new(
+	$client{$self} = IO::Socket::INET->new(
 		PeerAddr => $ip_address,
 		PeerPort => 4433,
 		Proto    => "tcp",
-		Timeout  => 10 ) or croak "Unable to connect to server" );
+		Timeout  => 10 ) or croak "Unable to connect to server";
+	local $/ = "\0";
+	$self->_client->getline;
+	$schema{$self} = $schema; # Schema accessor exists only for unit tests
 
 	return $self; }
-
-no namespace::clean;
 
 my $packet_id = 1;
 my $doc       = Document->new("1.0", "UTF-8");
 sub _write_packet {
-	my ($self, $namespace, $function, %params) = @_;
+	my ($self, $namespace, $function, $params) = @_;
 	XML::Compile::Util->import(qw(pack_type));
 	my $protocol_ns = $namespace =~ s/\w+$/protocol/rx;
+	$protocol_ns =~ s/\bvza\b/vzl/xg;
 	my $packet_type =  pack_type($protocol_ns, "packet");
 	my $op_type = pack_type($namespace, $function);
 	my ($short_ns) = $namespace =~ /(\w+)$/x;
 	my $operator = Element->new($short_ns);
 
 	$operator->addChild(
-		%params
-		? $self->_schema->writer($op_type)->($doc, \%params)
+		defined($params)
+		? $self->_schema->writer($op_type)->($doc, $params)
 		: Element->new($function) );
 	my $packet = $self->_schema->writer($packet_type)->(
 		$doc, {
@@ -99,8 +100,6 @@ sub _write_packet {
 			data => { cho_operator => [ { $short_ns => $operator } ] } } );
 	return $packet->toString; }
 
-use namespace::clean;
-
 # Generate API methods:
 
 foreach my $namespace ( $schema->namespaces->list ) {
@@ -108,14 +107,14 @@ foreach my $namespace ( $schema->namespaces->list ) {
 	no strict "refs";
 	*{__PACKAGE__ . "::" . $ns_short} = sub {
 		use strict "refs";
-		my ($self, $function, %params) = @_;
+		my ($self, $function, $params) = @_;
 		local $/ = "\0";
-		my $operation = $self->_write_packet($namespace, $function, %params);
+		my $operation = $self->_write_packet($namespace, $function, $params);
 		$operation =~ s/(\w+?>.+?==)\n/$1/gx;
 		$self->_client->print($operation . "\0");
-		return $self->_client->readline; } }
+		return $self->_client->getline; } }
 #		return Response->new(
-#			$client->reader($namespace)->( $self->_client->readline ) ); } }
+#			$client->reader($namespace)->( $self->_client->getline ) ); } }
 
 1;
 

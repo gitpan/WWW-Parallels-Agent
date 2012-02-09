@@ -33,7 +33,8 @@
          "requires" : {
             "File::ShareDir" : "0",
             "Hash::FieldHash" : "0",
-            "IO::Socket" : "0",
+            "IO::Socket::INET" : "0",
+            "Socket" : "1.97",
             "XML::Compile::Cache" : "0",
             "namespace::clean" : "0",
             "perl" : "v5.10.0"
@@ -60,6 +61,6 @@
          "web" : "https://github.com/rsimoes/www-parallels-agent"
       }
    },
-   "version" : "v0.0.2"
+   "version" : "v0.0.3"
 }
 

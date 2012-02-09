@@ -21,7 +21,7 @@ my %module_build_args = (
     "Richard Sim\303\265es <rsimoes AT cpan DOT org>"
   ],
   "dist_name" => "WWW-Parallels-Agent",
-  "dist_version" => "v0.0.2",
+  "dist_version" => "v0.0.3",
   "license" => "lgpl",
   "module_name" => "WWW::Parallels::Agent",
   "recommends" => {},
@@ -29,7 +29,8 @@ my %module_build_args = (
   "requires" => {
     "File::ShareDir" => 0,
     "Hash::FieldHash" => 0,
-    "IO::Socket" => 0,
+    "IO::Socket::INET" => 0,
+    "Socket" => "1.97",
     "XML::Compile::Cache" => 0,
     "namespace::clean" => 0,
     "perl" => "v5.10"

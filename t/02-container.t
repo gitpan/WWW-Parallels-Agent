@@ -3,8 +3,8 @@
 use v5.10;
 use strict;
 use warnings FATAL => "all";
-use Test::More;
 use Module::Load;
+use Test::More;
 use WWW::Parallels::Agent;
 use constant Agent => "WWW::Parallels::Agent";
 
